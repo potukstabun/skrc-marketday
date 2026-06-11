@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKRC — Infinite Code Stream v2.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060810;
+            --surface: #0e1020;
+            --text: #3b82f6;
+            --accent: #22d3ee;
+            --gold: #f59e0b;
+            --dim: rgba(59, 130, 246, 0.4);
+            --keyword: #f472b6;
+            --function: #60a5fa;
+            --string: #34d399;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 15px 25px;
+            background: rgba(14, 16, 32, 0.9);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .sys-info {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+        }
+
+        #code-container {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        #code-container::-webkit-scrollbar { width: 4px; }
+        #code-container::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 10px; }
+
+        .paragraph {
+            border-left: 2px solid var(--dim);
+            padding-left: 15px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .line {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            min-height: 1.6em;
+            white-space: pre-wrap;
+        }
+
+        .keyword { color: var(--keyword); }
+        .function { color: var(--function); }
+        .string { color: var(--string); }
+        .comment { color: var(--dim); font-style: italic; }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--accent);
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="sys-info">SKRC_CORE // LOG_STREAM_ENABLED</div>
+        <div class="sys-info" id="clock">00:00:00</div>
+    </header>
+
+    <div id="code-container"></div>
+
+    <script>
+        const container = document.getElementById('code-container');
+        
+        const codeSnippets = [
+            () => `<span class="keyword">async function</span> <span class="function">deployRotiSaimai</span>(units) {`,
+            () => `  <span class="comment">// ⚙️ แขนกลกำลังเตรียมแผ่นแป้ง...</span>`,
+            () => `  <span class="keyword">const</span> temp = ${Math.floor(Math.random() * 20) + 180};`,
+            () => `  <span class="keyword">await</span> <span class="function">sensor.calibrate</span>({ heat: temp });`,
+            () => `  <span class="keyword">if</span> (status === <span class="string">"READY"</span>) { <span class="function">motor.spin</span>(${Math.floor(Math.random() * 360)}); }`,
+            () => `<span class="function">system.log</span>(<span class="string">"SKRC_WHEEL_ROTATION_${Math.floor(Math.random() * 9999)}"</span>);`,
+            () => `<span class="keyword">const</span> successRate = ${(Math.random() * 100).toFixed(2)}%;`,
+            () => `<span class="keyword">process</span>.execute(<span class="string">"CLEAN_UP_SEQ"</span>);`,
+            () => `<span class="comment">/* วิเคราะห์ตำแหน่งการวางสายไหมลำดับที่ ${Math.floor(Math.random() * 100)} */</span>`,
+            () => `<span class="keyword">await</span> <span class="function">sync</span>({ lat: ${Math.random().toFixed(4)}, lng: ${Math.random().toFixed(4)} });`
+        ];
+
+        async function typeWriter(el, html) {
+            let i = 0;
+            let currentHtml = "";
+            while (i < html.length) {
+                if (html[i] === "<") {
+                    let tagEnd = html.indexOf(">", i);
+                    currentHtml += html.substring(i, tagEnd + 1);
+                    i = tagEnd + 1;
+                } else {
+                    currentHtml += html[i];
+                    i++;
+                    el.innerHTML = currentHtml + '<span class="cursor"></span>';
+                    container.scrollTop = container.scrollHeight;
+                    await new Promise(r => setTimeout(r, 10 + Math.random() * 20));
+                }
+            }
+            el.innerHTML = html;
+        }
+
+        async function createParagraph() {
+            const p = document.createElement('div');
+            p.className = 'paragraph';
+            container.appendChild(p);
+            
+            const lineCount = Math.floor(Math.random() * 4) + 3;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'line';
+                p.appendChild(line);
+                const snippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+                await typeWriter(line, snippet());
+            }
+
+            if (container.children.length > 15) {
+                container.removeChild(container.firstChild);
+            }
+        }
+
+        async function startGenerator() {
+            await createParagraph();
+            const nextDelay = Math.random() * 1000 + 500;
+            setTimeout(startGenerator, nextDelay);
+        }
+
+        setInterval(() => {
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString();
+        }, 1000);
+
+        startGenerator();
+    </script>
+</body>
+</html>
