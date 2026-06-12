@@ -3,66 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKRC — Roti Saimai System v2.0</title>
+<title>SKRC — โรตีสายไหม Spin Wheel</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700;800&family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* ส่วนเก็บค่าสีหลักๆ ของเว็บไซต์ (Theme Colors) เพื่อให้เรียกใช้ง่ายและแก้ไขที่เดียว */
     --bg: #060810;
-    --surface: #1a1a1a;
-    --surface2: #2a2a2a;
-    --border: rgba(200,200,200,0.08);
-    --blue: #4a4a4a;
-    --blue-bright: #6a6a6a;
-    --cyan: #5a5a5a; /* Muted cyan */
-    --gold: #6a6a6a; /* Muted gold */
-    --gold-light: #8a8a8a; /* Muted gold light */
-    --red: #7a7a7a; /* Muted red */
-    --green: #5a5a5a; /* Muted green */
-    --text: #e0e0e0;
-    --text-dim: rgba(224,224,224,0.4);
-    --c1: #3a3a3a; /* Muted color for wheel segment */
-    --c2: #4a4a4a; /* Muted color for wheel segment */
-    --c3: #5a5a5a; /* Muted color for wheel segment */
-    --c4: #6a6a6a; /* Muted color for wheel segment */
+    --surface: #0e1020;
+    --surface2: #161828;
+    --border: rgba(100,180,255,0.08);
+    --blue: #3b82f6;
+    --blue-bright: #60a5fa;
+    --cyan: #22d3ee;
+    --gold: #f59e0b;
+    --gold-light: #fcd34d;
+    --red: #ef4444;
+    --green: #22c55e;
+    --text: #e2e8f0;
+    --text-dim: rgba(226,232,240,0.4);
+    /* Wheel segment colors */
+    --c1: #f97316;  /* 1 ชิ้น 40% */
+    --c2: #3b82f6;  /* 2 ชิ้น 30% */
+    --c3: #a855f7;  /* 3 ชิ้น 20% */
+    --c4: #22c55e;  /* 4 ชิ้น 10% */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     font-family: 'Sarabun', sans-serif;
-    /* กำหนดพื้นหลังและการจัดวางหน้าจอให้เต็มพื้นที่พอดี */
     background: var(--bg);
     color: var(--text);
     height: 100vh;
-    /* overflow: hidden; */ /* ลบออกเพื่อให้เนื้อหาสามารถเลื่อนได้ */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
-  /* สร้างเอฟเฟกต์แสงฟุ้งกระจาย (Glow) ที่พื้นหลัง */
   body::before {
     content: '';
     position: fixed; inset: 0;
     background:
-      radial-gradient(ellipse 70% 50% at 20% 90%, rgba(100,100,100,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 80% 10%, rgba(120,120,120,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(80,80,80,0.03) 0%, transparent 70%);
+      radial-gradient(ellipse 70% 50% at 20% 90%, rgba(59,130,246,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 10%, rgba(168,85,247,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(34,211,238,0.03) 0%, transparent 70%);
     pointer-events: none; z-index: 0;
   }
 
-  /* สร้างลายเส้นตาราง (Grid) จางๆ เพื่อความสวยงามแบบโลกอนาคต */
+  /* Grid background */
   body::after {
     content: '';
     position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(100,100,100,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(100,100,100,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none; z-index: 0;
   }
 
-  /* ส่วนหัวของเว็บไซต์ (Header) */
+  /* ——— HEADER ——— */
   header {
     position: relative; z-index: 10;
     display: flex;
@@ -75,17 +73,26 @@
     flex-shrink: 0;
   }
 
-  .logo-area { display: flex; align-items: center; gap: 12px; }
-  .skrc-logo { width: 52px; height: 52px; flex-shrink: 0; }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* SKRC Logo SVG */
+  .skrc-logo {
+    width: 52px; height: 52px;
+    flex-shrink: 0;
+  }
+
   .club-info { display: flex; flex-direction: column; }
 
-  /* ชื่อคลับ SKRC พร้อมเอฟเฟกต์สีรุ้งเคลื่อนที่ */
   .club-name {
     font-family: 'Orbitron', monospace;
     font-weight: 900;
     font-size: 1.15rem;
-    letter-spacing: 0.08em;
-    background: linear-gradient(90deg, var(--text) 0%, var(--text-dim) 50%, var(--text) 100%); /* Muted shimmer */
+    letter-spacing: 0.12em;
+    background: linear-gradient(90deg, var(--cyan) 0%, var(--blue-bright) 50%, var(--cyan) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -93,102 +100,104 @@
     animation: shimmer 3s ease-in-out infinite;
   }
 
-  @keyframes shimmer { 0%,100% { background-position: 0% 0%; } 50% { background-position: 100% 0%; } }
+  @keyframes shimmer {
+    0%,100% { background-position: 0% 0%; }
+    50% { background-position: 100% 0%; }
+  }
 
-  .club-sub { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); font-weight: 300; }
+  .club-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
 
-  .header-center { text-align: center; }
-  .roti-title { font-family: 'Sarabun', sans-serif; font-weight: 800; font-size: 1.6rem; letter-spacing: 0.05em; color: var(--gold-light); text-shadow: 0 0 20px rgba(252,211,77,0.4); }
-  .roti-title { color: var(--text); text-shadow: none; } /* Muted title */
-  /* คำอธิบายรองใต้ชื่อหลัก */
-  .roti-sub { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); }
+  .header-center {
+    text-align: center;
+  }
 
-  .condolence-message {
+  .roti-title {
     font-family: 'Sarabun', sans-serif;
-    font-size: 0.8rem;
-    color: var(--text);
-    text-align: center; margin-top: 5px; }
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(252,211,77,0.4);
+  }
 
-  .header-right { display: flex; gap: 8px; align-items: center; }
+  .roti-sub {
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
 
   .rate-chip {
-    display: flex; flex-direction: column; align-items: center;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 4px 8px; min-width: 44px;
-    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 8px;
+    min-width: 44px;
   }
-  .rate-chip-num { font-family: 'Orbitron', monospace; font-size: 0.7rem; font-weight: 700; }
-  .rate-chip-label { font-size: 0.52rem; color: var(--text-dim); white-space: nowrap; }
 
-  /* โครงสร้างหลักของแอป แบ่งเป็น 3 คอลัมน์ (ซ้าย, กลาง, ขวา) */
+  .rate-chip-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .rate-chip-label {
+    font-size: 0.52rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ——— MAIN LAYOUT ——— */
   .app {
     position: relative; z-index: 10;
     flex: 1;
     display: grid;
-    grid-template-columns: 400px 1fr 260px;
+    grid-template-columns: 220px 1fr 220px;
     gap: 12px;
     padding: 12px 16px;
-    overflow-y: auto; /* เพิ่มเพื่อให้ส่วนเนื้อหาหลักสามารถเลื่อนได้ */
     min-height: 0;
   }
 
-  /* แผงด้านซ้าย (Left Panel) */
-  .left-panel {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 12px;
-  }
-  .panel-full { grid-column: span 2; }
-
-  /* สไตล์ของกล่องคอนเทนเนอร์แต่ละอัน */
+  /* ——— PANELS ——— */
   .panel {
-    background: rgba(22, 24, 40, 0.5);
-    border: 1px solid rgba(100, 180, 255, 0.1);
-    border-radius: 10px;
+    background: rgba(14,16,32,0.7);
+    border: 1px solid var(--border);
+    border-radius: 14px;
     padding: 12px;
     backdrop-filter: blur(10px);
-    display: flex; /* Ensure flex is set for consistent layout */
+    display: flex;
     flex-direction: column;
     gap: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
-  }
-  .panel:hover { transform: translateY(-2px); box-shadow: 0 8px 32px -1px rgba(0, 0, 0, 0.3); border-color: rgba(34, 211, 238, 0.2); }
-  
-  /* Neon Border สำหรับบล็อกที่ใช้งาน */
-  .panel.active { /* Keep active state for visual feedback, but muted */
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
   }
 
-  #bg-glow {
-    position: fixed; inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    transition: opacity 1s ease, background 1s ease;
-    opacity: 0;
-  }
-
-  @keyframes bounce-num {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  .animate-bounce { animation: bounce-num 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-  /* ป้ายกำกับชื่อกล่อง */
   .panel-label {
     font-family: 'Orbitron', monospace;
     font-size: 0.55rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--text-dim); /* Muted label color */
+    color: var(--cyan);
     padding-bottom: 7px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
-  } /* Muted label color */
+  }
 
   .panel-label::before {
     content: '';
@@ -196,10 +205,10 @@
     border-radius: 1px;
     background: var(--cyan);
     display: inline-block;
-    box-shadow: 0 0 6px rgba(100,100,100,0.5); /* Muted shadow */
+    box-shadow: 0 0 6px var(--cyan);
   }
 
-  /* สไตล์หน้าจอ Terminal (Log การทำงาน) */
+  /* ——— TERMINAL ——— */
   .terminal {
     background: #04060c;
     border: 1px solid rgba(34,211,238,0.15);
@@ -235,220 +244,181 @@
     min-height: 80px;
     max-height: 130px;
   }
+
   .terminal-body::-webkit-scrollbar { width: 2px; }
   .terminal-body::-webkit-scrollbar-thumb { background: rgba(34,211,238,0.2); }
 
   .term-line { display: flex; gap: 5px; }
-  /* สีต่างๆ ของตัวอักษรใน Terminal */
-  .term-prompt { color: var(--text-dim); opacity: 0.7; }
-  .t-ok { color: var(--text-dim); } /* Muted green */
-  .t-info { color: var(--text-dim); } /* Muted cyan */
-  .t-warn { color: var(--text-dim); } /* Muted gold */
-  .t-err { color: var(--text-dim); } /* Muted red */
+  .term-prompt { color: var(--cyan); opacity: 0.7; }
+  .t-ok { color: var(--green); }
+  .t-info { color: var(--cyan); }
+  .t-warn { color: var(--gold); }
+  .t-err { color: var(--red); }
   .t-dim { color: var(--text-dim); }
   .cursor { display: inline-block; width: 6px; height: 10px; background: var(--cyan); animation: blink 1s steps(1) infinite; vertical-align: middle; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ——— SETTINGS BOX ——— */
-  .admin-overlay {
-    position: fixed; inset: 0; z-index: 2000;
-    background: rgba(4,6,16,0.98); backdrop-filter: blur(20px);
-    display: none; padding: 40px; overflow-y: auto;
-  }
-  .admin-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 350px; gap: 24px;
-  }
-  .admin-card {
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px; padding: 24px;
-  }
-  .admin-title { 
-    font-family: 'Orbitron', monospace; font-size: 1.2rem; color: var(--text); 
-    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
-  }
-  .admin-table { width: 100%; border-collapse: collapse; }
-  .admin-table th { text-align: left; font-size: 0.7rem; color: var(--text-dim); padding: 8px; border-bottom: 1px solid var(--border); }
-  .admin-table td { padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-  
-  .inp-flat { /* Muted input styles */
-    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; padding: 6px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
-  }
-  .btn-sys {
-    background: var(--cyan); color: #000; border: none; padding: 10px 20px;
-    border-radius: 8px; font-family: 'Orbitron', monospace; font-weight: bold; cursor: pointer;
-  }
-  .btn-danger { background: var(--red); color: var(--text); } /* Muted danger button */
-  .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
-  /* Login Box */
-  .settings-box { background: rgba(100,100,100,0.04); border: 1px solid rgba(100,100,100,0.12); border-radius: 10px; padding: 10px 12px; } /* Muted settings box */
-  .lock-screen { display: flex; flex-direction: column; gap: 6px; }
-  .pw-row { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; }
-  .pw-input { background: none; border: none; outline: none; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--gold); flex: 1; }
-  .unlock-btn { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); border-radius: 5px; padding: 4px 12px; font-family: 'Orbitron', monospace; font-size: 0.52rem; font-weight: 700; color: var(--gold); cursor: pointer; }
-  .pw-err { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--red); text-align: center; }
-
-  /* Price Edit UI */
-  .price-edit-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; }
-  
-  /* Floating Admin Button */
-  #floating-admin-btn {
-    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
-    background: var(--surface2); border: 1px solid var(--text-dim); color: var(--text-dim); /* Muted admin button */
-    width: 40px; height: 40px; border-radius: 50%; display: none; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 0 15px var(--cyan);
-  }
-
-  /* Floating QR Corner */
-  .floating-qr {
-    position: fixed; bottom: 20px; left: 20px; z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 6px; border-radius: 8px;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-  .floating-qr:hover { transform: scale(1.1); background: #fff; }
-  .floating-qr svg { width: 64px; height: 64px; }
-  .floating-qr .qr-label { font-size: 7px; color: #000; font-weight: bold; font-family: 'Sarabun', sans-serif; }
-
-  /* หน้าจอตอนที่ปลดล็อกแล้ว (สำหรับแก้ค่าโอกาสสุ่ม) */
-  .unlock-screen { display: flex; flex-direction: column; gap: 7px; }
-
-  /* หน้าจอตอนที่ปลดล็อกแล้ว (สำหรับแก้ค่าโอกาสสุ่ม) */
-  .unlock-screen { display: flex; flex-direction: column; gap: 7px; }
-
-  .unlock-header {
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .unlock-title { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--green); }
-  .lock-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 4px; padding: 2px 6px;
-    font-size: 0.5rem; color: var(--text-dim); cursor: pointer;
-    transition: all 0.2s;
-  }
-  .lock-btn:hover { border-color: var(--red); color: var(--red); }
-
-  .seg-row {
-    display: flex; align-items: center; gap: 6px;
-  }
-  .seg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .seg-name { font-size: 0.6rem; color: var(--text-dim); flex: 1; }
-  .seg-num-input {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--gold);
-    width: 75px; 
-    padding: 6px 12px;
-    text-align: right; outline: none;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.1); /* Muted input shadow */
-  }
-  .seg-num-input:focus { /* Muted focus state */
-    border-color: rgba(150, 150, 150, 0.5); 
-    background: rgba(255, 255, 255, 0.07); /* Keep light background on focus */
-    box-shadow: 0 0 15px rgba(150, 150, 150, 0.1), inset 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-  .seg-pct { font-size: 0.6rem; color: var(--text-dim); }
-
-  /* ระบบลงทะเบียนผู้เล่นใหม่ */
-  .player-reg-box {
-    background: var(--surface2);
-    border: 1px solid var(--cyan);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .reg-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
+  /* ——— STATUS ——— */
+  .status-box {
+    background: rgba(4,6,12,0.6);
     border: 1px solid var(--border);
-    background: var(--bg);
-    color: #fff;
-    font-size: 1rem;
-    margin: 10px 0;
-  }
-
-  /* ระบบชำระเงิน PromptPay */
-  .payment-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 1000;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(5px);
-  }
-  .qr-box {
-    background: white; padding: 15px; border-radius: 12px;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-  }
-  .qr-box img { width: 220px; height: 220px; }
-  .qr-text { color: #000; font-family: sans-serif; font-weight: bold; }
-
-  /* ส่วนท้ายของตั้งค่า */
-  .settings-footer {
-    display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 2px;
-  }
-  .total-indicator {
+    border-radius: 8px;
+    padding: 9px 11px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.58rem;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    min-height: 50px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
   }
-  .total-ok { color: var(--green); }
-  .total-bad { color: var(--red); }
 
-  /* ปุ่มกดตกลงเพื่อใช้งานค่าใหม่ */
-  .apply-btn {
-    background: linear-gradient(135deg, rgba(100,100,100,0.2), rgba(100,100,100,0.1)); /* Muted apply button */
-    border: 1px solid rgba(100,100,100,0.35);
-    border-radius: 5px;
-    padding: 3px 10px;
-    font-family: 'Orbitron', monospace;
-    font-size: 0.52rem; font-weight: 700;
-    color: var(--green); cursor: pointer;
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    margin-top: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+
+  .status-dot.error { background: var(--red); box-shadow: 0 0 6px var(--red); animation: none; }
+  .status-text { font-size: 0.58rem; }
+  .status-text.ok { color: var(--green); }
+  .status-text.err { color: var(--red); }
+
+  /* ——— MUSIC ——— */
+  .music-box {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(168,85,247,0.06));
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .music-top { display: flex; align-items: center; justify-content: space-between; }
+  .music-track { font-size: 0.7rem; font-weight: 700; color: var(--text); }
+  .music-genre { font-size: 0.55rem; color: var(--text-dim); letter-spacing: 0.1em; }
+
+  .waveform { display: flex; align-items: center; gap: 2px; height: 18px; }
+  .w-bar { width: 3px; background: rgba(59,130,246,0.3); border-radius: 2px; transition: height 0.08s; }
+  .w-bar.active { background: var(--blue-bright); }
+
+  .music-controls { display: flex; align-items: center; gap: 6px; }
+  .m-btn {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 0.65rem; color: var(--blue-bright);
     transition: all 0.2s;
   }
-  .apply-btn:hover:not(:disabled) { background: rgba(100,100,100,0.3); } /* Muted hover */
-  .apply-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .m-btn:hover { background: rgba(59,130,246,0.25); }
+  .m-btn.play { width: 32px; height: 32px; background: var(--blue); color: #fff; border-color: var(--blue); font-size: 0.85rem; }
+  .m-btn.play:hover { background: var(--blue-bright); }
+  .m-state { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); margin-left: auto; }
 
-  /* ——— ส่วนกลาง (Center) สำหรับวงล้อ ——— */
-  .center-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
-
-  .wheel-wrap { position: relative; width: 300px; height: 300px; }
-
-  /* แสงไฟหลังวงล้อ */
-  .wheel-glow {
-    position: absolute; inset: -12px; border-radius: 50%;
-    background: conic-gradient(
-      var(--c1) 0deg 144deg, /* Use muted colors */
-      var(--c2) 144deg 252deg, /* Use muted colors */
-      var(--c3) 252deg 324deg, /* Use muted colors */
-      var(--c4) 324deg 360deg  /* Use muted colors */
-    ); 
-    filter: blur(8px); opacity: 0.25; z-index: 0; transition: opacity 0.3s;
+  /* ——— SETTINGS ——— */
+  .settings-box {
+    background: rgba(245,158,11,0.04);
+    border: 1px solid rgba(245,158,11,0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
+
+  .s-row { display: flex; align-items: center; justify-content: space-between; }
+  .s-label { font-size: 0.6rem; color: var(--text-dim); }
+  .s-val { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: var(--gold); }
+
+  .s-slider {
+    width: 100%; appearance: none; -webkit-appearance: none;
+    height: 2px; border-radius: 2px;
+    background: rgba(255,255,255,0.08); outline: none; cursor: pointer;
+  }
+  .s-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--gold); cursor: pointer;
+    box-shadow: 0 0 6px rgba(245,158,11,0.5);
+  }
+
+  .pw-row {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 8px;
+  }
+  .pw-input {
+    background: none; border: none; outline: none;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+    color: var(--gold); flex: 1; min-width: 0; letter-spacing: 0.1em;
+  }
+
+  /* ——— CENTER ——— */
+  .center-panel {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 16px;
+  }
+
+  .wheel-wrap {
+    position: relative;
+    width: 300px; height: 300px;
+  }
+
+  /* Outer glow ring */
+  .wheel-glow {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--c1) 0deg 144deg,
+      var(--c2) 144deg 252deg,
+      var(--c3) 252deg 324deg,
+      var(--c4) 324deg 360deg
+    );
+    filter: blur(8px);
+    opacity: 0.25;
+    z-index: 0;
+    transition: opacity 0.3s;
+  }
+
   .spinning .wheel-glow { opacity: 0.55; animation: rotate-glow 0.4s linear infinite; }
   @keyframes rotate-glow { to { transform: rotate(360deg); } }
 
-  /* ขอบของวงล้อ */
-  .wheel-border { position: absolute; inset: -5px; border-radius: 50%; border: 2px solid rgba(100,180,255,0.15); background: transparent; z-index: 1; }
+  .wheel-border {
+    position: absolute;
+    inset: -5px; border-radius: 50%;
+    border: 2px solid rgba(100,180,255,0.15);
+    background: transparent; z-index: 1;
+  }
 
-  /* พื้นที่วาดรูปวงล้อ (Canvas) */
-  canvas#wheel { position: relative; z-index: 2; border-radius: 50%; cursor: pointer; transition: transform 0.1s; }
+  canvas#wheel {
+    position: relative; z-index: 2;
+    border-radius: 50%; cursor: pointer;
+    transition: transform 0.1s;
+  }
   canvas#wheel:hover { transform: scale(1.01); }
 
-  /* ลูกศรชี้รางวัล */
-  .pointer { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); z-index: 10; filter: drop-shadow(0 3px 10px rgba(245,158,11,0.7)); }
+  /* Pointer */
+  .pointer {
+    position: absolute;
+    top: -16px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    filter: drop-shadow(0 3px 10px rgba(245,158,11,0.7));
+  }
 
-  .hub { /* Muted hub styles */
+  /* Hub */
+  .hub {
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     width: 48px; height: 48px;
@@ -456,184 +426,221 @@
     border-radius: 50%;
     border: 2px solid rgba(34,211,238,0.5);
     z-index: 5;
-    display: flex; align-items: center; justify-content: center; /* Ensure flex is set */
+    display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    box-shadow: 0 0 16px rgba(100,100,100,0.3), inset 0 0 8px rgba(0,0,0,0.5);
+    box-shadow: 0 0 16px rgba(34,211,238,0.3), inset 0 0 8px rgba(0,0,0,0.5);
     transition: all 0.2s;
-    font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 700; color: var(--text-dim); letter-spacing: 0.05em;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
   }
-  .hub:hover { box-shadow: 0 0 24px rgba(34,211,238,0.6), inset 0 0 8px rgba(0,0,0,0.5); transform: translate(-50%, -50%) scale(1.06); }
+  .hub:hover {
+    box-shadow: 0 0 24px rgba(34,211,238,0.6), inset 0 0 8px rgba(0,0,0,0.5);
+    transform: translate(-50%, -50%) scale(1.06);
+  }
 
+  /* Spin button */
   .spin-btn {
     position: relative;
     background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-    color: #fff; border: none; border-radius: 50px;
+    color: #fff;
+    border: none; border-radius: 50px;
     padding: 11px 48px;
-    font-family: 'Orbitron', monospace; font-size: 0.85rem; font-weight: 700;
-    letter-spacing: 0.15em; cursor: pointer; transition: all 0.25s;
-    box-shadow: 0 4px 20px rgba(100,100,100,0.45), 0 0 0 1px rgba(120,120,120,0.2); /* Muted button shadow */
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(59,130,246,0.45), 0 0 0 1px rgba(96,165,250,0.2);
     text-transform: uppercase;
   }
-  .spin-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,130,246,0.6), 0 0 0 1px rgba(96,165,250,0.3); }
+  .spin-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(59,130,246,0.6), 0 0 0 1px rgba(96,165,250,0.3);
+  }
   .spin-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .spin-btn::after { content: ''; position: absolute; inset: 1px; border-radius: 50px; background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent); pointer-events: none; }
+  .spin-btn::after {
+    content: ''; position: absolute; inset: 1px;
+    border-radius: 50px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent);
+    pointer-events: none;
+  }
 
-  /* พื้นที่แสดงผลลัพธ์หลังสุ่มเสร็จ */
-  .result-area { min-height: 42px; display: flex; align-items: center; justify-content: center; }
+  /* Result */
+  .result-area {
+    min-height: 42px; display: flex; align-items: center; justify-content: center;
+  }
+
   .result-badge {
-    background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 50px;
-    padding: 8px 28px; font-size: 0.78rem; letter-spacing: 0.05em; color: var(--text-dim);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 28px;
+    font-size: 0.78rem; letter-spacing: 0.05em;
+    color: var(--text-dim);
     opacity: 0; transition: all 0.4s;
-    font-family: 'Sarabun', sans-serif; font-weight: 700;
-    /* ปรากฎออกมาเมื่อมีผลลัพธ์ */
-  } /* Muted result badge */
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 700;
+  }
   .result-badge.show { opacity: 1; }
-  .result-badge.win { border-color: rgba(252,211,77,0.4); background: rgba(245,158,11,0.08); color: var(--gold-light); box-shadow: 0 0 20px rgba(245,158,11,0.2); }
+  .result-badge.win {
+    border-color: rgba(252,211,77,0.4);
+    background: rgba(245,158,11,0.08);
+    color: var(--gold-light);
+    box-shadow: 0 0 20px rgba(245,158,11,0.2);
+  }
 
   /* ——— RIGHT ——— */
-  .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; min-height: 0; }
+  .history-list {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px;
+    min-height: 0;
+  }
   .history-list::-webkit-scrollbar { width: 2px; }
   .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
-  
-  /* รายการประวัติสุ่ม */
-  .h-item { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px; animation: slide-in 0.3s ease-out; }
+
+  .h-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 9px;
+    animation: slide-in 0.3s ease-out;
+  }
   @keyframes slide-in { from { opacity:0; transform: translateX(8px); } to { opacity:1; transform: none; } }
 
   .h-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .h-label { font-size: 0.68rem; color: var(--text); flex: 1; font-weight: 600; }
   .h-sub { font-size: 0.58rem; color: var(--text-dim); }
-  .h-num { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); } /* ลำดับการสุ่ม */
+  .h-num { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--text-dim); }
   .h-empty { color: var(--text-dim); font-size: 0.62rem; text-align: center; padding: 20px 0; opacity: 0.4; letter-spacing: 0.1em; }
-  /* ข้อความแสดงเมื่อยังไม่มีข้อมูล */
 
-  .stats-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; flex-shrink: 0; }
+  /* Stats bar */
+  .stats-box {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; flex-shrink: 0;
+  }
   .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .stat-item { text-align: center; }
   .stat-num { font-family: 'Orbitron', monospace; font-size: 0.8rem; font-weight: 700; }
   .stat-lbl { font-size: 0.52rem; color: var(--text-dim); letter-spacing: 0.08em; }
 
+  /* Confetti */
   #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
 
+  /* Scan line effect */
   .scanline {
-    /* เอฟเฟกต์เส้นสแกนทีวีเก่าๆ จางๆ */
     position: fixed; inset: 0; z-index: 1;
-    background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+    );
     pointer-events: none;
   }
 </style>
 </head>
 <body>
 
-<!-- เอฟเฟกต์หน้าจอ -->
 <div class="scanline"></div>
-<!-- พื้นหลังสว่างวาบเวลาถูกรางวัล -->
-<div id="bg-glow"></div>
-<!-- พื้นที่แสดงพลุกระดาษ -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- Floating QR Corner -->
-<div class="floating-qr" onclick="window.open('promptpay_qr.html', '_blank')">
-  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-    <rect width="100" height="100" fill="#ffffff" />
-    <!-- QR Placeholder Pattern (แนะนำให้ใช้ SVG path จริงจากเครื่องมือสร้าง QR สำหรับข้อมูลที่ถูกต้อง) -->
-    <path fill="#000000" d="M0 0h32v32h-32zM4 4v24h24v-24zM10 10h12v12h-12zM68 0h32v32h-32zM72 4v24h24v-24zM78 10h12v12h-12zM0 68h32v32h-32zM4 72v24h24v-24zM10 78h12v12h-12z" />
-    <path fill="#000000" d="M40 0h8v8h-8zM52 0h8v16h-8zM60 8h8v8h-8zM40 12h4v4h-4zM48 16h8v8h-8zM0 40h8v8h-8zM12 40h12v8h-12zM40 40h16v16h-16zM64 40h8v8h-8zM80 40h20v8h-20zM0 52h4v4h-4zM12 52h8v8h-8zM24 52h8v8h-8zM60 52h12v8h-12zM80 52h8v8h-8zM92 52h8v8h-8z" />
-    <path fill="#000000" d="M40 68h8v8h-8zM52 68h12v8h-12zM72 68h8v8h-8zM44 80h8v8h-8zM60 80h12v8h-12zM84 80h16v8h-16zM40 92h8v8h-8zM56 92h8v8h-8zM72 92h12v8h-12zM92 92h8v8h-8z" />
-    <!-- PromptPay Central Logo Placeholder -->
-    <rect x="36" y="36" width="28" height="28" fill="#ffffff" stroke="#003d6b" stroke-width="1.5" rx="2" />
-    <text x="50" y="52" font-family="Arial, sans-serif" font-size="4.5" font-weight="bold" fill="#003d6b" text-anchor="middle">PromptPay</text>
-  </svg>
-  <div class="qr-label">ด.ช. อัควินทย์</div>
-</div>
-
+<!-- ——— HEADER ——— -->
 <header>
-  <!-- ส่วนของโลโก้ SKRC ด้านซ้าย -->
-  <div class="logo-area" onclick="location.reload()" style="cursor:pointer">
+  <div class="logo-area">
+    <!-- SKRC Robotics Club SVG Logo -->
     <svg class="skrc-logo" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-      <defs> <!-- Muted colors for SVG gradients -->
+      <defs>
         <linearGradient id="gCyan" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#5a5a5a"/>
-          <stop offset="100%" stop-color="#6a6a6a"/>
+          <stop offset="0%" stop-color="#22d3ee"/>
+          <stop offset="100%" stop-color="#3b82f6"/>
         </linearGradient>
-        <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"> 
-          <stop offset="0%" stop-color="#8a8a8a"/>
-          <stop offset="100%" stop-color="#6a6a6a"/>
+        <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#fcd34d"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
         </linearGradient>
         <filter id="glow">
           <feGaussianBlur stdDeviation="1.5" result="blur"/>
           <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-      <polygon points="26,2 47,13 47,39 26,50 5,39 5,13" fill="none" stroke="url(#gCyan)" stroke-width="1.5" opacity="0.5"/>
-      <polygon points="26,6 43,15.5 43,36.5 26,46 9,36.5 9,15.5" fill="rgba(14,16,32,0.95)" stroke="rgba(100,100,100,0.2)" stroke-width="0.5"/>
+
+      <!-- Hexagon border -->
+      <polygon points="26,2 47,13 47,39 26,50 5,39 5,13" fill="none" stroke="url(#gCyan)" stroke-width="1.5" opacity="0.7"/>
+      <polygon points="26,6 43,15.5 43,36.5 26,46 9,36.5 9,15.5" fill="rgba(14,16,32,0.95)" stroke="rgba(34,211,238,0.2)" stroke-width="0.5"/>
+
+      <!-- Gear teeth -->
       <g filter="url(#glow)" opacity="0.9">
         <circle cx="26" cy="26" r="11" fill="none" stroke="url(#gCyan)" stroke-width="1.5"/>
-        <rect x="24.5" y="13" width="3" height="3.5" rx="0.5" fill="url(#gCyan)"/> <!-- Muted fills -->
-        <rect x="24.5" y="35.5" width="3" height="3.5" rx="0.5" fill="url(#gCyan)"/> <!-- Muted fills -->
-        <rect x="13" y="24.5" width="3.5" height="3" rx="0.5" fill="url(#gCyan)"/> <!-- Muted fills -->
-        <rect x="35.5" y="24.5" width="3.5" height="3" rx="0.5" fill="url(#gCyan)"/> <!-- Muted fills -->
-        <rect x="17.2" y="15.8" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 18.7 17.3)"/> <!-- Muted fills -->
-        <rect x="32" y="15.8" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 33.5 17.3)"/> <!-- Muted fills -->
-        <rect x="17.2" y="32" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 18.7 33.5)"/> <!-- Muted fills -->
-        <rect x="32" y="32" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 33.5 33.5)"/> <!-- Muted fills -->
+        <!-- 8 gear teeth -->
+        <rect x="24.5" y="13" width="3" height="3.5" rx="0.5" fill="url(#gCyan)"/>
+        <rect x="24.5" y="35.5" width="3" height="3.5" rx="0.5" fill="url(#gCyan)"/>
+        <rect x="13" y="24.5" width="3.5" height="3" rx="0.5" fill="url(#gCyan)"/>
+        <rect x="35.5" y="24.5" width="3.5" height="3" rx="0.5" fill="url(#gCyan)"/>
+        <!-- diagonal teeth -->
+        <rect x="17.2" y="15.8" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 18.7 17.3)"/>
+        <rect x="32" y="15.8" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 33.5 17.3)"/>
+        <rect x="17.2" y="32" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 18.7 33.5)"/>
+        <rect x="32" y="32" width="3" height="3" rx="0.5" fill="url(#gCyan)" transform="rotate(45 33.5 33.5)"/>
+        <!-- inner circle -->
         <circle cx="26" cy="26" r="6" fill="rgba(14,16,32,0.9)" stroke="url(#gCyan)" stroke-width="1"/>
+        <!-- center diamond -->
         <polygon points="26,22 29.5,26 26,30 22.5,26" fill="url(#gGold)" opacity="0.9"/>
+        <!-- circuit dots -->
         <circle cx="14" cy="20" r="1.2" fill="url(#gCyan)" opacity="0.6"/>
         <circle cx="14" cy="32" r="1.2" fill="url(#gCyan)" opacity="0.6"/>
         <circle cx="38" cy="20" r="1.2" fill="url(#gCyan)" opacity="0.6"/>
         <circle cx="38" cy="32" r="1.2" fill="url(#gCyan)" opacity="0.6"/>
+        <!-- circuit lines -->
         <line x1="14" y1="20" x2="14" y2="32" stroke="url(#gCyan)" stroke-width="0.5" opacity="0.4"/>
         <line x1="38" y1="20" x2="38" y2="32" stroke="url(#gCyan)" stroke-width="0.5" opacity="0.4"/>
       </g>
+
+      <!-- SK text small -->
       <text x="26" y="26.5" text-anchor="middle" dominant-baseline="middle"
         font-family="Orbitron,monospace" font-weight="900" font-size="5.5"
         fill="url(#gGold)" letter-spacing="0.5">SK</text>
     </svg>
+
     <div class="club-info">
       <div class="club-name">SKRC</div>
       <div class="club-sub">SK Robotics Club</div>
     </div>
-    <div class="condolence-message">
-      น้อมรำลึกในพระมหากรุณาธิคุณ<br>สมเด็จพระเจ้าลูกเธอ เจ้าฟ้าพัชรกิติยาภา นเรนทิราเทพยวดี กรมหลวงราชสาริณีสิริพัชร มหาวัชรราชธิดา
-    </div>
   </div>
 
-  <!-- ส่วนชื่อโปรแกรมตรงกลาง -->
   <div class="header-center">
-    <div class="roti-title" style="color:var(--text)">โรตีสายไหม</div>
-    <div class="roti-sub" style="color:var(--text-dim)">Fortune Spin Wheel</div>
+    <div class="roti-title">🫓 โรตีสายไหม</div>
+    <div class="roti-sub">Fortune Spin Wheel</div>
   </div>
 
-  <!-- ส่วนแสดง % โอกาสได้รางวัลในปัจจุบันทางขวา -->
-  <div class="header-right" id="header-chips">
+  <div class="header-right">
     <div class="rate-chip">
-      <span class="rate-chip-num" id="chip0" style="color:var(--text-dim)">40%</span>
+      <span class="rate-chip-num" style="color:var(--c1)">40%</span>
       <span class="rate-chip-label">1 ชิ้น</span>
     </div>
     <div class="rate-chip">
-      <span class="rate-chip-num" id="chip1" style="color:var(--text-dim)">30%</span>
+      <span class="rate-chip-num" style="color:var(--c2)">30%</span>
       <span class="rate-chip-label">2 ชิ้น</span>
     </div>
     <div class="rate-chip">
-      <span class="rate-chip-num" id="chip2" style="color:var(--text-dim)">20%</span>
+      <span class="rate-chip-num" style="color:var(--c3)">20%</span>
       <span class="rate-chip-label">3 ชิ้น</span>
     </div>
     <div class="rate-chip">
-      <span class="rate-chip-num" id="chip3" style="color:var(--text-dim)">10%</span>
+      <span class="rate-chip-num" style="color:var(--c4)">10%</span>
       <span class="rate-chip-label">4 ชิ้น</span>
     </div>
   </div>
 </header>
 
+<!-- ——— APP GRID ——— -->
 <div class="app">
 
   <!-- LEFT -->
-  <div class="left-panel">
+  <div class="left-panel" style="display:flex;flex-direction:column;gap:10px;">
 
-    <!-- หน้าจอแสดง Log การทำงานเหมือนระบบคอมพิวเตอร์ -->
-    <div class="panel panel-full" id="panel-terminal">
+    <div class="panel" style="flex:1">
       <div class="panel-label">Terminal Log</div>
-      <div class="terminal" style="border-color:rgba(100,100,100,0.15)">
+      <div class="terminal">
         <div class="terminal-bar">
           <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
           <span class="terminal-name">roti_wheel.js</span>
@@ -648,114 +655,80 @@
       </div>
     </div>
 
-    <!-- SETTINGS -->
-    <div class="panel panel-full" id="panel-settings">
+    <div class="panel">
+      <div class="panel-label">System Status</div>
+      <div class="status-box">
+        <div class="status-dot" id="status-dot"></div>
+        <span class="status-text ok" id="status-text">ONLINE — ระบบพร้อม</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Music</div>
+      <div class="music-box">
+        <div class="music-top">
+          <div>
+            <div class="music-track" id="music-track">SKRC Beat #01</div>
+            <div class="music-genre">Lo-fi / Ambient</div>
+          </div>
+        </div>
+        <div class="waveform" id="waveform"></div>
+        <div class="music-controls">
+          <button class="m-btn" onclick="prevTrack()">◁</button>
+          <button class="m-btn play" id="play-btn" onclick="toggleMusic()">▶</button>
+          <button class="m-btn" onclick="nextTrack()">▷</button>
+          <span class="m-state" id="m-state">paused</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
       <div class="panel-label">Settings</div>
       <div class="settings-box">
-
-        <!-- ส่วนใส่รหัสผ่าน (เริ่มต้น) -->
-        <div class="lock-screen" id="lock-screen">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-dim);text-align:center;">
-            🔐 ใส่รหัสเพื่อแก้ไข
-          </div>
-          <div class="pw-row">
-            <input type="email" placeholder="Email" class="pw-input" id="admin-email" style="margin-bottom:5px">
-          </div>
-          <div class="pw-row">
-            <input type="password" placeholder="Password" class="pw-input" id="admin-pw" style="margin-bottom:5px">
-          </div>
-          <div class="pw-row">
-            <input type="password" placeholder="Dev Key" class="pw-input" id="dev-key">
-          </div>
-          <div style="margin-top:5px; display:flex; gap:5px">
-            <button class="unlock-btn" style="flex:1" onclick="tryAdminLogin()">LOGIN ADMIN</button>
-          </div>
-          <div id="pw-err" style="display:none" class="pw-err">❌ รหัสไม่ถูกต้อง</div>
+        <div class="s-row">
+          <span class="s-label">Rate / Opacity</span>
+          <span class="s-val" id="rate-val">50%</span>
         </div>
-
-        <div class="unlock-screen" id="unlock-screen" style="display:none; text-align:center">
-          <div class="t-ok" style="font-size:0.7rem; margin-bottom:10px; color:var(--text-dim)">★ SYSTEM ACCESS GRANTED</div>
-          <button class="btn-sys" onclick="openAdminDashboard()" style="width:100%">OPEN OVERRIDE CONSOLE</button>
-          <button class="lock-btn" onclick="lockSettings()" style="margin-top:10px">🔒 Terminate Session</button>
+        <input type="range" class="s-slider" min="0" max="100" value="50"
+          oninput="document.getElementById('rate-val').textContent=this.value+'%';document.querySelector('.app').style.opacity=(0.4+this.value/100*0.6)">
+        <div class="pw-row">
+          <span style="font-size:0.6rem;color:var(--text-dim)">🔐</span>
+          <input type="password" placeholder="password" value="aouchai14" class="pw-input">
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- MAIN ADMIN DASHBOARD OVERLAY -->
-  <div id="admin-dashboard" class="admin-overlay">
-    <div class="admin-grid">
-      <div class="admin-card">
-        <div class="admin-title">⚙ WHEEL ARCHITECTURE</div>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>COLOR</th><th>LABEL</th><th>PIECES</th><th>PROB (%)</th><th>ACTION</th>
-            </tr>
-          </thead>
-          <tbody id="adm-seg-body"></tbody>
-        </table>
-        <button class="btn-sys" style="margin-top:20px; background:rgba(34,211,238,0.1); color:var(--cyan); border:1px dashed var(--cyan)" onclick="addNewSegment()">+ ADD NEW SLOT</button>
-      </div> <!-- Muted button styles -->
-
-      <div style="display:flex; flex-direction:column; gap:24px">
-
-        <div class="admin-card">
-          <div class="admin-title">🎨 SYSTEM THEME</div>
-          <div class="theme-grid">
-            <div><div class="stat-lbl">CYAN</div><input type="color" id="clr-cyan" class="inp-flat" style="width:100%" oninput="updateTheme()"></div>
-            <div><div class="stat-lbl">GOLD</div><input type="color" id="clr-gold" class="inp-flat" style="width:100%" oninput="updateTheme()"></div>
-            <div><div class="stat-lbl">RED</div><input type="color" id="clr-red" class="inp-flat" style="width:100%" oninput="updateTheme()"></div>
-            <div><div class="stat-lbl">GREEN</div><input type="color" id="clr-green" class="inp-flat" style="width:100%" oninput="updateTheme()"></div>
-          </div>
-        </div>
-
-        <div class="admin-card">
-          <div class="admin-title">⚡ GLOBAL CONFIG</div>
-          <div class="stat-lbl">PITY BOOST RATE (0.001 = 0.1%)</div>
-          <input type="number" id="cfg-pity" class="inp-flat" style="width:100%; margin-bottom:15px" step="0.001">
-          
-          <div class="stat-lbl">MASTER KEY</div>
-          <input type="text" id="cfg-key" class="inp-flat" style="width:100%">
-        </div>
-      </div>
-    </div>
-
-    <div style="position:fixed; bottom:40px; left:0; right:0; text-align:center">
-       <button class="btn-sys" style="padding:15px 60px; font-size:1rem; box-shadow:0 0 30px rgba(100,100,100,0.5)" onclick="saveAllAdminConfigs()">💾 SAVE & APPLY SYSTEM CHANGES</button>
-       <button class="lock-btn" style="margin-left:20px; background:rgba(255,255,255,0.1)" onclick="closeAdminDashboard()">Close</button>
-    </div>
-  </div>
-
-  <div id="floating-admin-btn" onclick="openAdminDashboard()">⚙</div>
-
-  <!-- CENTER: ส่วนของวงล้อหลัก -->
-  <div class="center-panel" id="panel-wheel">
+  <!-- CENTER -->
+  <div class="center-panel">
     <div class="wheel-wrap" id="wheel-wrap">
       <div class="wheel-glow" id="wheel-glow"></div>
       <div class="wheel-border"></div>
+
       <div class="pointer">
-        <svg width="26" height="26" viewBox="0 0 26 26"> <!-- Muted pointer colors -->
-          <polygon points="13,26 1,4 25,4" fill="var(--text-dim)" opacity="0.95"/>
+        <svg width="26" height="26" viewBox="0 0 26 26">
+          <polygon points="13,26 1,4 25,4" fill="#f59e0b" opacity="0.95"/>
           <polygon points="13,22 4,6 22,6" fill="#fcd34d" opacity="0.35"/>
         </svg>
       </div>
+
       <canvas id="wheel" width="300" height="300"></canvas>
+
       <div class="hub" id="hub" onclick="spinWheel()">SPIN</div>
     </div>
 
-    <!-- แสดงผลรางวัล -->
     <div class="result-area">
       <div class="result-badge" id="result-badge">กด SPIN เพื่อเริ่ม</div>
     </div>
 
-    <button class="spin-btn" id="spin-btn" onclick="spinWheel()">▶ SPIN</button> <!-- ปุ่มกดหมุน -->
+    <button class="spin-btn" id="spin-btn" onclick="spinWheel()">▶ SPIN</button>
   </div>
 
-  <!-- RIGHT: ส่วนประวัติและสถิติ -->
+  <!-- RIGHT -->
   <div class="right-panel panel">
     <div class="panel-label">History — 10 Latest</div>
+
     <div class="stats-box">
       <div class="stats-grid">
         <div class="stat-item">
@@ -767,7 +740,7 @@
           <div class="stat-lbl">BEST WIN</div>
         </div>
         <div class="stat-item">
-          <div class="stat-num" id="stat-avg" style="color:var(--text-dim)">—</div>
+          <div class="stat-num" id="stat-avg" style="color:var(--blue-bright)">—</div>
           <div class="stat-lbl">AVG PIECE</div>
         </div>
         <div class="stat-item">
@@ -776,6 +749,7 @@
         </div>
       </div>
     </div>
+
     <div class="history-list" id="history-list">
       <div class="h-empty" id="h-empty">ยังไม่มีการหมุน<br>กด SPIN เพื่อเริ่ม</div>
     </div>
@@ -784,171 +758,16 @@
 </div>
 
 <script>
-// ——— ข้อมูลของรางวัลในแต่ละช่อง (Label: ชื่อ, pieces: จำนวน, prob: โอกาสออก (0.40 คือ 40%), color: สีช่อง) ———
-let SEGMENTS = [ // Muted segment colors
-  { label: '1 ชิ้น',  pieces: 1, baseProb: 0.40, prob: 0.40, deg: 144, color: '#3a3a3a', emoji: '🫓' },
-  { label: '2 ชิ้น',  pieces: 2, baseProb: 0.30, prob: 0.30, deg: 108, color: '#4a4a4a', emoji: '🫓🫓' },
-  { label: '3 ชิ้น',  pieces: 3, baseProb: 0.20, prob: 0.20, deg: 72,  color: '#5a5a5a', emoji: '🫓🫓🫓' },
-  { label: '4 ชิ้น',  pieces: 4, baseProb: 0.10, prob: 0.10, deg: 36,  color: '#6a6a6a', emoji: '🫓×4' },
+// ——— WHEEL SEGMENTS (weighted) ———
+// 1 ชิ้น 40%, 2 ชิ้น 30%, 3 ชิ้น 20%, 4 ชิ้น 10%
+const SEGMENTS = [
+  { label: '1 ชิ้น',  pieces: 1, prob: 0.40, deg: 144, color: '#f97316', emoji: '🫓' },
+  { label: '2 ชิ้น',  pieces: 2, prob: 0.30, deg: 108, color: '#3b82f6', emoji: '🫓🫓' },
+  { label: '3 ชิ้น',  pieces: 3, prob: 0.20, deg: 72,  color: '#a855f7', emoji: '🫓🫓🫓' },
+  { label: '4 ชิ้น',  pieces: 4, prob: 0.10, deg: 36,  color: '#22c55e', emoji: '🫓×4' },
 ];
 
-// ——— New State Variables ———
-let currentPlayer = { nickname: 'SKRC Player', uid: '001-GUEST' };
-let isMainAdmin = false;
-let spinsSinceLastPity = 0; // ตัวนับสำหรับ Pity System
-let DEV_PASSWORD = 'aouchai148';
-const MASTER_EMAIL = 'yuttanapat55@gmail.com';
-
-// ——— ฟังก์ชันช่วย: ทำให้แผง (Panel) ดูเหมือนมีการทำงาน (Active) ———
-function setPanelActive(id, active, color = null) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (active) {
-    el.classList.add('active');
-    if (color) {
-      el.style.borderColor = color;
-      el.style.boxShadow = `0 0 20px ${color}66, inset 0 0 10px ${color}22`;
-    }
-  } else { el.classList.remove('active'); el.style.borderColor = ''; el.style.boxShadow = ''; }
-}
-
-// ——— Admin Login Logic ———
-function tryAdminLogin() {
-  const email = document.getElementById('admin-email').value;
-  const pw = document.getElementById('admin-pw').value;
-  const dev = document.getElementById('dev-key').value;
-  const err = document.getElementById('pw-err');
-
-  // ตรวจสอบสิทธิ์พิเศษ (Master Email) หรือสิทธิ์ Admin ปกติ
-  if ((email === MASTER_EMAIL || dev === DEV_PASSWORD)) {
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('unlock-screen').style.display = 'flex';
-    err.style.display = 'none';
-    if (email === MASTER_EMAIL) isMainAdmin = true;
-
-    document.getElementById('floating-admin-btn').style.display = 'flex';
-    
-    addTermLog('$', `admin.auth("${email}")`, 't-ok');
-    if (isMainAdmin) {
-      addTermLog('', '✓ MAIN ADMIN PRIVILEGE GRANTED', 't-warn');
-    } else {
-      // Admin ธรรมดาเข้า Dashboard ได้แต่แก้บางอย่างไม่ได้ (ถ้าต้องการ)
-      // ในที่นี้ให้แก้ได้หมดถ้า login ผ่าน
-      document.getElementById('cfg-key').disabled = true;
-      addTermLog('', '✓ Admin access granted', 't-ok');
-    }
-  } else {
-    err.style.display = 'block';
-    err.style.animation = 'none';
-    void err.offsetWidth;
-    err.style.animation = 'shake 0.3s ease';
-    document.getElementById('admin-pw').value = '';
-    addTermLog('', '⚠ Wrong password attempt', 't-warn');
-    setStatus(false, 'Access Denied');
-  }
-}
-
-// ฟังก์ชันสั่งล็อกหน้าจอ
-function lockSettings() {
-  document.getElementById('lock-screen').style.display = 'flex';
-  document.getElementById('unlock-screen').style.display = 'none';
-  document.getElementById('admin-pw').value = '';
-  document.getElementById('dev-key').value = '';
-  document.getElementById('pw-err').style.display = 'none'; // Ensure error message is hidden
-  document.getElementById('floating-admin-btn').style.display = 'none';
-  addTermLog('$', 'admin.logout()', 't-dim');
-}
-
-// --- Dashboard Management ---
-function openAdminDashboard() {
-  document.getElementById('admin-dashboard').style.display = 'block';
-  renderAdminSegments();
-  
-  // Load Theme Colors to inputs
-  const style = getComputedStyle(document.documentElement); // Load current muted colors
-  document.getElementById('clr-cyan').value = style.getPropertyValue('--cyan').trim(); 
-  document.getElementById('clr-gold').value = style.getPropertyValue('--gold').trim(); 
-  document.getElementById('clr-red').value = style.getPropertyValue('--red').trim(); 
-  document.getElementById('clr-green').value = style.getPropertyValue('--green').trim(); 
-  document.getElementById('cfg-pity').value = spinsSinceLastPity * 0.001 === 0 ? 0.001 : 0.001; // Mock current boost
-  document.getElementById('cfg-key').value = DEV_PASSWORD;
-}
-
-function closeAdminDashboard() {
-  document.getElementById('admin-dashboard').style.display = 'none';
-}
-
-function renderAdminSegments() {
-  const tbody = document.getElementById('adm-seg-body');
-  tbody.innerHTML = '';
-  SEGMENTS.forEach((s, i) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="color" class="inp-flat" value="${s.color}" id="adm-c-${i}"></td>
-      <td><input type="text" class="inp-flat" value="${s.label}" id="adm-l-${i}"></td>
-      <td><input type="number" class="inp-flat" value="${s.pieces}" id="adm-p-${i}" style="width:60px"></td>
-      <td><input type="number" class="inp-flat" value="${Math.round(s.prob * 100)}" id="adm-pr-${i}" style="width:60px"></td>
-      <td><button class="lock-btn btn-danger" onclick="removeSegment(${i})">DEL</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function addNewSegment() { SEGMENTS.push({ label: 'New', pieces: 1, prob: 0, color: '#ffffff', emoji: '🎁' }); renderAdminSegments(); }
-function removeSegment(i) { if(SEGMENTS.length > 2) { SEGMENTS.splice(i, 1); renderAdminSegments(); } }
-
-
-function updateTheme() {
-  document.documentElement.style.setProperty('--cyan', document.getElementById('clr-cyan').value);
-  document.documentElement.style.setProperty('--gold', document.getElementById('clr-gold').value);
-  document.documentElement.style.setProperty('--red', document.getElementById('clr-red').value); 
-  document.documentElement.style.setProperty('--green', document.getElementById('clr-green').value); 
-}
- 
-function saveAllAdminConfigs() {
-  // Save Segments
-  const newSegments = [];
-  let totalProb = 0;
-  for(let i=0; i<SEGMENTS.length; i++) {
-    const pr = (parseInt(document.getElementById(`adm-pr-${i}`).value) || 0) / 100;
-    totalProb += pr;
-    newSegments.push({
-      label: document.getElementById(`adm-l-${i}`).value,
-      pieces: parseInt(document.getElementById(`adm-p-${i}`).value) || 0,
-      prob: pr,
-      color: document.getElementById(`adm-c-${i}`).value,
-      emoji: '🫓'
-    });
-  }
-  if(Math.abs(totalProb - 1) > 0.001) return alert("Total probability must be 100%!");
-  
-  SEGMENTS = newSegments;
-  let cumDeg = 0;
-  SEGMENTS.forEach(s => {
-    s.deg = s.prob * 360;
-    s.startDeg = cumDeg;
-    cumDeg += s.deg;
-  });
-  DEV_PASSWORD = document.getElementById('cfg-key').value;
-  
-  updateGlow();
-  drawWheel(currentAngle);
-  closeAdminDashboard();
-  addTermLog('$', 'sys.override.apply()', 't-warn');
-}
-
-// ฟังก์ชันอัปเดตสีรุ้งหลังวงล้อให้ตรงตามขนาดช่อง
-function updateGlow() {
-  let deg = 0;
-  let gradient = SEGMENTS.map(s => {
-    const start = deg;
-    deg += s.deg; 
-    return `${s.color} ${start}deg ${deg}deg`;
-  }).join(', ');
-  document.getElementById('wheel-glow').style.background = `conic-gradient(${gradient})`;
-}
-
-// คำนวณองศาเริ่มต้นของแต่ละช่อง
+// Build cumulative degree table
 let cumDeg = 0;
 SEGMENTS.forEach(s => { s.startDeg = cumDeg; cumDeg += s.deg; });
 
@@ -957,29 +776,30 @@ const ctx = canvas.getContext('2d');
 const W = canvas.width;
 const CX = W / 2, CY = W / 2, R = W / 2 - 4;
 
-let currentAngle = 0;
+let currentAngle = 0; // radians
 let isSpinning = false;
 let history = [];
 let spinCount = 0;
 let totalPieces = 0;
 
+// ——— DRAW ———
 function drawWheel(angle) {
-  // ฟังก์ชันวาดรูปวงล้อลงบน Canvas
   ctx.clearRect(0, 0, W, W);
+
   let start = angle;
   SEGMENTS.forEach(seg => {
     const sweep = (seg.deg / 360) * 2 * Math.PI;
-    // วาดพื้นหลังช่องรางวัล
     const end = start + sweep;
 
+    // Base
     ctx.beginPath();
     ctx.moveTo(CX, CY);
     ctx.arc(CX, CY, R, start, end);
     ctx.closePath();
     ctx.fillStyle = seg.color;
     ctx.fill();
-    // ไล่เฉดสีให้ดูมีมิติ
 
+    // Inner gradient
     const g = ctx.createRadialGradient(CX, CY, R * 0.15, CX, CY, R);
     g.addColorStop(0, 'rgba(255,255,255,0.15)');
     g.addColorStop(0.5, 'rgba(255,255,255,0.04)');
@@ -987,7 +807,7 @@ function drawWheel(angle) {
     ctx.fillStyle = g;
     ctx.fill();
 
-    // วาดเส้นแบ่งช่อง
+    // Divider
     ctx.beginPath();
     ctx.moveTo(CX, CY);
     ctx.lineTo(CX + R * Math.cos(start), CY + R * Math.sin(start));
@@ -995,32 +815,26 @@ function drawWheel(angle) {
     ctx.lineWidth = 2.5;
     ctx.stroke();
 
-    // วาดข้อความ (1 ชิ้น, 2 ชิ้น) ในแต่ละช่อง
+    // Label
     const midAngle = start + sweep / 2;
     ctx.save();
     ctx.translate(CX, CY);
     ctx.rotate(midAngle);
 
+    // Emoji
     ctx.font = `${seg.deg > 80 ? 22 : 16}px serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(seg.pieces === 4 ? '🫓' : '', R * 0.62, -12);
-    // ถ้าเป็น 4 ชิ้น ให้โชว์ไอคอนโรตีเพิ่ม
 
+    // Main label
     ctx.fillStyle = 'rgba(255,255,255,0.95)';
     ctx.font = `bold ${seg.deg > 60 ? 15 : 12}px Sarabun, sans-serif`;
     ctx.shadowColor = 'rgba(0,0,0,0.5)';
     ctx.shadowBlur = 4;
-    // เขียนชื่อรางวัล
     ctx.fillText(seg.label, R * 0.58, seg.deg > 60 ? 6 : 0);
-    
-    // Pity Indicator
-    if (seg.pieces === 4 && spinsSinceLastPity > 0) {
-      ctx.fillStyle = 'var(--cyan)';
-      ctx.font = 'bold 9px Orbitron';
-      ctx.fillText(`+${(spinsSinceLastPity * 0.1).toFixed(1)}%`, R * 0.58, 32);
-    }
-    
+
+    // Probability
     ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.font = `${seg.deg > 60 ? 11 : 9}px Orbitron, monospace`;
     ctx.shadowBlur = 0;
@@ -1030,19 +844,7 @@ function drawWheel(angle) {
     start = end;
   });
 
-  // Reflective Shine Overlay (เพิ่มแสงสะท้อนหน้าปัดกระจก)
-  ctx.save();
-  const shine = ctx.createLinearGradient(W * 0.2, 0, W * 0.8, W);
-  shine.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
-  shine.addColorStop(0.48, 'rgba(255, 255, 255, 0)');
-  shine.addColorStop(0.52, 'rgba(255, 255, 255, 0)');
-  shine.addColorStop(1, 'rgba(255, 255, 255, 0.08)');
-  ctx.fillStyle = shine;
-  ctx.beginPath();
-  ctx.arc(CX, CY, R, 0, 2 * Math.PI);
-  ctx.fill();
-  ctx.restore();
-
+  // Center fill
   ctx.beginPath();
   ctx.arc(CX, CY, R, 0, 2 * Math.PI);
   ctx.strokeStyle = 'rgba(14,16,32,0.9)';
@@ -1051,73 +853,54 @@ function drawWheel(angle) {
 }
 
 drawWheel(currentAngle);
-setTimeout(() => { document.getElementById('result-badge').style.opacity = '0.3'; }, 600);
+setTimeout(() => {
+  const b = document.getElementById('result-badge');
+  b.style.opacity = '0.3';
+}, 600);
 
-function pickResult(finalAngle) { // ตรวจสอบว่าหลังจากหมุนจบแล้ว ลูกศรชี้ที่ช่องไหน
+// ——— PICK RESULT (weighted random) ———
+function pickResult(finalAngle) {
+  // Pointer at top = -π/2 from canvas 0
   const ptr = (((-Math.PI / 2) - finalAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
   const deg = ptr * 180 / Math.PI;
+
   for (let i = SEGMENTS.length - 1; i >= 0; i--) {
     if (deg >= SEGMENTS[i].startDeg) return i;
   }
   return 0;
 }
 
-// ——— ฟังก์ชันหลัก: การหมุนวงล้อ ———
+// ——— SPIN ———
 function spinWheel() {
   if (isSpinning) return;
   isSpinning = true;
-  
   document.getElementById('spin-btn').disabled = true;
-  document.getElementById('wheel-wrap').classList.add('spinning'); // เริ่มหมุนไฟฟุ้งๆ
+  document.getElementById('wheel-wrap').classList.add('spinning');
 
-  // คำนวณความน่าจะเป็นพร้อม Pity System (+0.1% ต่อการหมุนที่ไม่ได้ 4 ชิ้น)
+  // Determine target segment using weighted random
   const rand = Math.random();
   let cum = 0, targetSeg = 0;
-  
-  const pityBoost = spinsSinceLastPity * 0.001; // 0.1% per spin
-  
-  // กู้คืนระบบสุ่ม: ปรับโอกาสสุ่มด้วย Pity System
-  let adjustedProbs = SEGMENTS.map(s => s.prob);
-  const pityIdx = SEGMENTS.findIndex(s => s.pieces === 4);
-  
-  if (pityIdx !== -1 && pityBoost > 0) {
-    const boost = Math.min(pityBoost, 1 - adjustedProbs[pityIdx]);
-    const othersSum = adjustedProbs.reduce((a, b, i) => i === pityIdx ? a : a + b, 0);
-    
-    if (othersSum > 0) {
-      adjustedProbs = adjustedProbs.map((p, i) => {
-        if (i === pityIdx) return p + boost;
-        return p - (boost * (p / othersSum));
-      });
-    }
-  }
-
   for (let i = 0; i < SEGMENTS.length; i++) {
-    cum += adjustedProbs[i];
+    cum += SEGMENTS[i].prob;
     if (rand < cum) { targetSeg = i; break; }
   }
 
-  // คำนวณองศาที่ต้องหยุด
+  // Calculate spin so it lands on targetSeg
   const seg = SEGMENTS[targetSeg];
-  setPanelActive('panel-wheel', true, seg.color);
-  setPanelActive('hub', true, seg.color);
-
   const targetDegCenter = seg.startDeg + seg.deg / 2;
   const targetRad = (-Math.PI / 2) - (targetDegCenter * Math.PI / 180);
-  const fullRotations = (Math.floor(Math.random() * 5) + 12) * 2 * Math.PI;
+  const fullRotations = (Math.floor(Math.random() * 5) + 5) * 2 * Math.PI;
   const finalAngle = targetRad - currentAngle % (2 * Math.PI) + fullRotations;
 
-  // สุ่มเวลาที่จะใช้หมุนให้เร็วขึ้น (2-2.5 วินาที)
-  const duration = 2000 + Math.random() * 500;
+  const duration = 4000 + Math.random() * 1000;
   const startAngle = currentAngle;
   const startTime = performance.now();
 
   spinCount++;
-  addTermLog('$', `spin(${spinCount}) // target: ${seg.label}`); // แจ้งใน Terminal
+  addTermLog('$', `spin(${spinCount}) // target: ${seg.label}`);
   addTermLog('', `→ prob: ${(seg.prob * 100)}% | Δ: ${Math.round(finalAngle * 180 / Math.PI)}°`, 't-dim');
   setStatus(false, 'Spinning...');
 
-  // ฟังก์ชันคำนวณความหน่วง (ค่อยๆ ช้าลงตอนใกล้หยุด)
   function easeOut(t) { return 1 - Math.pow(1 - t, 4.5); }
 
   function animate(now) {
@@ -1126,6 +909,7 @@ function spinWheel() {
     drawWheel(currentAngle);
     if (t < 1) { requestAnimationFrame(animate); }
     else {
+      currentAngle = currentAngle;
       isSpinning = false;
       document.getElementById('spin-btn').disabled = false;
       document.getElementById('wheel-wrap').classList.remove('spinning');
@@ -1135,37 +919,33 @@ function spinWheel() {
   requestAnimationFrame(animate);
 }
 
-// เมื่อการหมุนจบลง
 function onSpinEnd(idx) {
   const seg = SEGMENTS[idx];
+
+  // Badge
   const badge = document.getElementById('result-badge');
   badge.textContent = seg.emoji + ' ได้ ' + seg.label + '!';
   badge.className = 'result-badge show win';
-  setPanelActive('panel-wheel', false);
-  setPanelActive('hub', false);
-  addTermLog('', `✓ Result: ${seg.label} (${(seg.prob*100)}%)`, 't-ok');
-  setStatus(true, `ได้ ${seg.label} — congratulations!`);
-  totalPieces += seg.pieces;
-  addHistory(seg); 
-  updateStats(seg); // อัปเดตตัวเลขสถิติ 
-  // launchConfetti(seg.color); // Confetti removed for somber tone
-  // triggerBeat(); // Beat removed for somber tone
-  // speakResult(seg); // Speech removed for somber tone
 
-  // Update Pity System
-  if (seg.pieces === 4) {
-    spinsSinceLastPity = 0; // รีเซ็ตถ้าได้รางวัลใหญ่
-    addTermLog('', '⚠ PITY SYSTEM RESET', 't-warn');
-  } else {
-    spinsSinceLastPity++; // เพิ่มโอกาสสะสม
-  }
-  drawWheel(currentAngle);
+  // Log
+  addTermLog('', `✓ Result: ${seg.label} (${(seg.prob*100)}%)`, 't-ok');
+
+  // Status
+  setStatus(true, `ได้ ${seg.label} — congratulations!`);
+
+  // History + stats
+  totalPieces += seg.pieces;
+  addHistory(seg);
+  updateStats(seg);
+
+  // Confetti
+  launchConfetti(seg.color);
+  triggerBeat();
 }
 
-// เพิ่มประวัติการสุ่ม
+// ——— HISTORY ———
 function addHistory(seg) {
   const now = new Date();
-  if (!currentPlayer) return;
   const t = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   history.unshift({ seg, t, n: spinCount });
   if (history.length > 10) history.pop();
@@ -1182,7 +962,7 @@ function addHistory(seg) {
       <div class="h-dot" style="background:${item.seg.color};box-shadow:0 0 5px ${item.seg.color}88"></div>
       <div style="flex:1;min-width:0">
         <div class="h-label">${item.seg.emoji} ${item.seg.label}</div>
-        <div class="h-sub">${currentPlayer.nickname} • ${item.t}</div>
+        <div class="h-sub">${item.t}</div>
       </div>
       <div class="h-num">#${item.n}</div>
     `;
@@ -1190,7 +970,6 @@ function addHistory(seg) {
   });
 }
 
-// อัปเดตสถิติรวม
 function updateStats(seg) {
   document.getElementById('stat-total').textContent = spinCount;
   const best = Math.max(...history.map(h => h.seg.pieces));
@@ -1201,7 +980,7 @@ function updateStats(seg) {
   document.getElementById('stat-lucky').textContent = lucky4 + 'x';
 }
 
-// เขียนข้อความลงใน Terminal Log
+// ——— TERMINAL ———
 function addTermLog(prompt, text, cls = 't-info') {
   const body = document.getElementById('terminal-body');
   const line = document.createElement('div');
@@ -1209,33 +988,38 @@ function addTermLog(prompt, text, cls = 't-info') {
   line.innerHTML = `<span class="term-prompt" style="opacity:${prompt?'0.7':'0'}">${prompt||'&nbsp;'}</span><span class="${cls}" style="font-size:0.58rem">${text}</span>`;
   const cur = body.querySelector('.cursor');
   if (cur) body.insertBefore(line, cur.closest('.term-line'));
-  else body.appendChild(line); // ใส่ข้อความใหม่ก่อนตัวกระพริบ
+  else body.appendChild(line);
   const lines = body.querySelectorAll('.term-line');
   if (lines.length > 20) lines[0].remove();
   body.scrollTop = body.scrollHeight;
 }
 
-// อัปเดตข้อความในกล่อง System Status
+// ——— STATUS ———
 function setStatus(ok, msg) {
   const dot = document.getElementById('status-dot');
   const txt = document.getElementById('status-text');
   if (ok === null) {
-    dot.className = 'status-dot'; txt.className = 'status-text ok'; txt.textContent = msg; // Muted status colors
+    dot.className = 'status-dot';
+    txt.className = 'status-text ok';
+    txt.textContent = msg;
   } else if (ok) {
-    dot.className = 'status-dot'; txt.className = 'status-text ok'; txt.textContent = '✓ ' + msg; // Muted status colors
+    dot.className = 'status-dot';
+    txt.className = 'status-text ok';
+    txt.textContent = '✓ ' + msg;
   } else {
-    dot.className = 'status-dot'; txt.className = 'status-text'; txt.textContent = '⟳ ' + msg; // Muted status colors
+    dot.className = 'status-dot';
+    txt.className = 'status-text';
+    txt.textContent = '⟳ ' + msg;
   }
 }
 
-// ——— ระบบพลุกระดาษ (Confetti) ———
+// ——— CONFETTI ———
 const cc = document.getElementById('confetti-canvas');
 const cx2 = cc.getContext('2d');
 cc.width = window.innerWidth; cc.height = window.innerHeight;
 window.addEventListener('resize', () => { cc.width = window.innerWidth; cc.height = window.innerHeight; });
 let particles = [];
 
-// ฟังก์ชันยิงพลุ
 function launchConfetti(base) {
   const cols = [base, '#fcd34d', '#fff', '#60a5fa', base + 'bb'];
   for (let i = 0; i < 90; i++) {
@@ -1254,7 +1038,6 @@ function launchConfetti(base) {
   animConf();
 }
 
-// แอนิเมชันให้พลุตกลงมา
 function animConf() {
   cx2.clearRect(0, 0, cc.width, cc.height);
   particles = particles.filter(p => p.life > 0);
@@ -1271,7 +1054,7 @@ function animConf() {
   if (particles.length > 0) requestAnimationFrame(animConf);
 }
 
-// ——— ระบบเสียงฉลองแบบ Digital ———
+// ——— AUDIO ———
 let audioCtx = null, isPlaying = false, musicTimer = null;
 const tracks = ['SKRC Beat #01', 'Robo Groove', 'Roti Bounce', 'Circuit Jam'];
 let trackIdx = 0;
@@ -1309,39 +1092,39 @@ function triggerBeat() {
   tone(784, 'sine', 0.2, 0.3, 0.26);
 }
 
-// ——— ระบบคอมพิวเตอร์พูดแสดงความยินดี (Text-to-Speech) ———
-// function speakResult(seg) { // Removed for somber tone
-//   if (!window.speechSynthesis) return;
+function toggleMusic() {
+  isPlaying = !isPlaying;
+  const btn = document.getElementById('play-btn');
+  const st = document.getElementById('m-state');
+  if (isPlaying) {
+    btn.textContent = '⏸'; st.textContent = 'playing';
+    beat(); musicTimer = setInterval(beat, 4000); animWave(true);
+  } else {
+    btn.textContent = '▶'; st.textContent = 'paused';
+    clearInterval(musicTimer); animWave(false);
+  }
+}
+function prevTrack() { trackIdx = (trackIdx - 1 + tracks.length) % tracks.length; document.getElementById('music-track').textContent = tracks[trackIdx]; }
+function nextTrack() { trackIdx = (trackIdx + 1) % tracks.length; document.getElementById('music-track').textContent = tracks[trackIdx]; }
 
-//   setPanelActive('panel-settings', true, seg.color);
+const wf = document.getElementById('waveform');
+for (let i = 0; i < 18; i++) {
+  const b = document.createElement('div'); b.className = 'w-bar';
+  b.style.height = '3px'; wf.appendChild(b);
+}
 
-//   // เพิ่มเอฟเฟกต์ Background Glow ทั่วทั้งหน้าเว็บตามสีรางวัล
-//   const bgGlow = document.getElementById('bg-glow');
-//   if (bgGlow) {
-//     bgGlow.style.background = `radial-gradient(circle at 50% 50%, ${seg.color}33 0%, transparent 75%)`;
-//     bgGlow.style.opacity = '1';
-//   }
+function animWave(on) {
+  const bars = wf.querySelectorAll('.w-bar');
+  if (!on) { bars.forEach(b => { b.style.height = '3px'; b.classList.remove('active'); }); return; }
+  bars.forEach(b => b.classList.add('active'));
+  (function step() {
+    if (!isPlaying) { animWave(false); return; }
+    bars.forEach(b => b.style.height = (Math.random() * 13 + 3) + 'px');
+    setTimeout(step, 80);
+  })();
+}
 
-//   // ปรับเป็น "ครับ" และ "เป็น" พร้อมตัดช่องว่างเพื่อความต่อเนื่อง
-//   const cleanLabel = seg.label.replace(/\s/g, '');
-//   const msg = new SpeechSynthesisUtterance(`ยินดีด้วยครับเป็น${cleanLabel}ครับ`);
-//   msg.lang = 'th-TH';
-//   msg.pitch = 1.4; // ปรับ Pitch ให้สูงขึ้นอีกเพื่อให้เสียงดูสาวและสดใส
-//   msg.rate = 1.1;  // ปรับให้พูดเร็วขึ้นเล็กน้อยให้ดูมีความมั่นใจแบบวัยรุ่น
-
-//   const voices = window.speechSynthesis.getVoices();
-//   const femaleVoice = voices.find(v => v.lang === 'th-TH' && (v.name.includes('Kanya') || v.name.includes('Thai') || v.name.includes('Google')));
-//   if (femaleVoice) msg.voice = femaleVoice;
-
-//   msg.onend = () => {
-//     setPanelActive('panel-settings', false);
-//     if (bgGlow) bgGlow.style.opacity = '0';
-//   };
-
-//   window.speechSynthesis.speak(msg);
-// }
-
-// ปุ่มลัด: กด Spacebar เพื่อหมุนได้เลย
+// ——— KEYBOARD ———
 document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); spinWheel(); } });
 </script>
 </body>
